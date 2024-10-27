@@ -23,7 +23,7 @@ app.use(
       }
       return callback(new Error("Not allowed by CORS"));
     },
-    credentials: true, // Allow credentials (optional if using cookies or authentication)
+    credentials: true,
   })
 );
 
@@ -42,13 +42,13 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024  // Set individual file size limit to 5MB
-  }
+    fileSize: 20 * 1024 * 1024, // Set individual file size limit to 5MB
+  },
 });
 
 // Set overall request size limit for Express
-app.use(express.json({ limit: '20mb' })); // JSON payload limit if needed
-app.use(express.urlencoded({ limit: '20mb', extended: true })); // URL-encoded payload limit
+app.use(express.json({ limit: "20mb" })); // JSON payload limit if needed
+app.use(express.urlencoded({ limit: "20mb", extended: true })); // URL-encoded payload limit
 
 // API route for handling file uploads
 app.post("/api/upload", upload.single("file"), (req, res) => {

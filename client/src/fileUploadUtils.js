@@ -61,25 +61,31 @@ export const captureImageFromCamera = async () => {
   }
 };
 
-// General file upload function (can be used by other functions)
+// General file upload function with improved error handling
 export const uploadFile = async (fileBlob, additionalData = {}) => {
-  const formData = new FormData();
-  formData.append('file', fileBlob);
+    const formData = new FormData();
+    formData.append('file', fileBlob);
 
-  // Add any additional data (e.g., captions)
-  Object.keys(additionalData).forEach(key => {
-    formData.append(key, additionalData[key]);
-  });
-
-  try {
-    const response = await axios.post('https://xxqx.net/api/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+    // Add any additional data (e.g., captions)
+    Object.keys(additionalData).forEach(key => {
+      formData.append(key, additionalData[key]);
     });
-    return response.data;  // Return response (e.g., file URL)
-  } catch (error) {
-    console.error('File upload failed:', error);
-    throw error;
-  }
-};
+
+    try {
+      const response = await axios.post('https://xxqx.net/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;  // Return response (e.g., file URL)
+    } catch (error) {
+      if (error.response) {
+        console.error('Server responded with an error:', error.response);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+      } else {
+        console.error('Error setting up request:', error.message);
+      }
+      throw error;
+    }
+  };
