@@ -27,7 +27,7 @@ app.use(
   })
 );
 
-// Configure Multer storage options
+// Configure Multer storage options and set file size limits
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/"); // Directory where files will be saved
@@ -38,8 +38,17 @@ const storage = multer.diskStorage({
   },
 });
 
-// Initialize the Multer upload handler
-const upload = multer({ storage: storage });
+// Set individual file size limit (in bytes) and total request size limit
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024  // Set individual file size limit to 5MB
+  }
+});
+
+// Set overall request size limit for Express
+app.use(express.json({ limit: '20mb' })); // JSON payload limit if needed
+app.use(express.urlencoded({ limit: '20mb', extended: true })); // URL-encoded payload limit
 
 // API route for handling file uploads
 app.post("/api/upload", upload.single("file"), (req, res) => {
