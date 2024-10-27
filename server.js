@@ -6,6 +6,8 @@ const fs = require("fs");
 
 const app = express();
 
+const FILE_SIZE_MULTIPLIER = 50;
+
 // Define allowed origins (including mobile)
 const allowedOrigins = [
   "https://xxqx.net", // Web domain
@@ -42,13 +44,13 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 20 * 1024 * 1024, // Set individual file size limit to 5MB
+    fileSize: FILE_SIZE_MULTIPLIER * 1024 * 1024, // Set individual file size limit to 5MB
   },
 });
 
 // Set overall request size limit for Express
-app.use(express.json({ limit: "20mb" })); // JSON payload limit if needed
-app.use(express.urlencoded({ limit: "20mb", extended: true })); // URL-encoded payload limit
+app.use(express.json({ limit: `${FILE_SIZE_MULTIPLIER}mb` })); // JSON payload limit if needed
+app.use(express.urlencoded({ limit: `${FILE_SIZE_MULTIPLIER}mb`, extended: true })); // URL-encoded payload limit
 
 // API route for handling file uploads
 app.post("/api/upload", upload.single("file"), (req, res) => {
