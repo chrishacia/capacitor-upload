@@ -73,6 +73,14 @@ app.get("/api/images", (req, res) => {
 // Serve the uploaded files as static content
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// Serve React frontend from client/build
+app.use(express.static(path.join(__dirname, "client/build")));
+
+// Route all other requests to React's index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
+
 // Start the Express server on port 5090
 const PORT = process.env.PORT || 5090;
 app.listen(PORT, () => {
